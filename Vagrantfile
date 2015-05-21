@@ -119,7 +119,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     engine_config.vm.network :private_network, ip: "192.168.100.20"
     engine_config.vm.hostname = 'myconnectome'
-    engine_config.vm.synced_folder "myconnectome_data", "/home/vagrant/myconnectome", create: true
+    #engine_config.vm.synced_folder "/tmp/myconnectome", "/home/vagrant/myconnectome", create: true
 
     engine_config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
