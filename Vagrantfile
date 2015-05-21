@@ -116,7 +116,7 @@ def create_context(link_dict):
 
 if __name__ == '__main__':
     app.debug = False
-    app.run(host="0.0.0.0")
+    app.run(host='0.0.0.0')
 """ >/tmp/boocoo
   sudo cp /tmp/boocoo /var/www/index.py
 fi
