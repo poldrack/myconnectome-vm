@@ -54,7 +54,7 @@ sudo a2enmod rewrite
 
 if ! [ -L /var/www ]; then
   sudo rm -rf /var/www
-  sudo ln -fs /vagrant /var/www
+  sudo ln -fs /home/vagrant/myconnectome /var/www
   echo """
 <VIRTUALHOST *:80>
 Alias /myconnectome/ "/home/vagrant/myconnectome/"
@@ -117,8 +117,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
     engine_config.vm.box_url = "https://dl.dropboxusercontent.com/u/363467/precise64_neuro.box"
 
-    engine_config.vm.network :private_network, ip: "192.168.100.20"
-    engine_config.vm.hostname = 'myconnectome'
+    engine_config.vm.network :private_network, ip: "192.168.0.20"
+    engine_config.vm.hostname = 'myconnectome-analysis'
     #engine_config.vm.synced_folder "/tmp/myconnectome", "/home/vagrant/myconnectome", create: true
 
     engine_config.vm.provider :virtualbox do |vb|
