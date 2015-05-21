@@ -23,6 +23,7 @@ $HOME/miniconda/bin/pip install nibabel
 $HOME/miniconda/bin/pip install gtf_to_genes
 $HOME/miniconda/bin/pip install suds
 $HOME/miniconda/bin/pip install mygene
+$HOME/miniconda/bin/pip install flask
 
 echo 'deb http://cran.rstudio.com/bin/linux/ubuntu precise/' >/tmp/myppa.list
 sudo cp /tmp/myppa.list /etc/apt/sources.list.d/
@@ -53,6 +54,17 @@ sudo apt-get install -y apache2
 
 if ! [ -L /var/www/myconnectome ]; then
   sudo ln -fs /home/vagrant/myconnectome /var/www
+fi
+
+# Web interface
+if [ ! -d $HOME/myconnectome/templates ]
+then
+  mkdir $HOME/myconnectome/templates
+fi
+
+if [ ! -d $HOME/myconnectome/static ]
+then
+  mkdir $HOME/myconnectome/static
 fi
 
 if ! [ -f /home/vagrant/myconnectome/index.html ]; then
