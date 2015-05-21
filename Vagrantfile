@@ -55,7 +55,6 @@ sudo a2enmod rewrite
 if ! [ -L /var/www ]; then
   sudo rm -rf /var/www
   sudo ln -fs /vagrant /var/www
-  sudo echo 'ServerRoot "/home/vagrant/myconnectome/"' |sudo tee --append /etc/apache2/apache2.conf
   echo """
 <VIRTUALHOST *:80>
 Alias /myconnectome/ "/home/vagrant/myconnectome/"
