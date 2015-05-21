@@ -211,7 +211,11 @@ user = vagrant
   sudo cp /tmp/abcde /etc/supervisor/conf.d/flask_project.conf
 fi
 
+cd /home/vagrant/myconnectome
+python setup.py install
+
 sudo ln -s /etc/nginx/sites-available/flask_project /etc/nginx/sites-enabled/flask_project
+cd /var/www
 sudo /etc/init.d/nginx restart
 sudo supervisorctl reread
 sudo supervisorctl update
