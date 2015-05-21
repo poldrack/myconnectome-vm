@@ -203,10 +203,9 @@ fi
 
 # Supervisor Configuration
 if ! [ -f /etc/supervisor/conf.d/flask_project.conf ]; then
-  echo """
-[program:flask_project]
-command = gunicorn index:app -b 0.0.0.0:5000
-directory = /home/vagrant
+  echo """[program:flask_project]
+command = /home/vagrant/miniconda/bin/gunicorn index:app -b 0.0.0.0:5000
+directory = /var/www
 user = vagrant
 """ >/tmp/abcde
   sudo cp /tmp/abcde /etc/supervisor/conf.d/flask_project.conf
