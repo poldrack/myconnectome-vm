@@ -25,6 +25,7 @@ $HOME/miniconda/bin/pip install suds
 $HOME/miniconda/bin/pip install mygene
 $HOME/miniconda/bin/pip install flask
 $HOME/miniconda/bin/pip install flup
+$HOME/miniconda/bin/pip install gunicorn
 
 echo 'deb http://cran.rstudio.com/bin/linux/ubuntu precise/' >/tmp/myppa.list
 sudo cp /tmp/myppa.list /etc/apt/sources.list.d/
@@ -37,8 +38,8 @@ sudo apt-get install -y --force-yes r-base
 sudo apt-get install -y --force-yes xserver-xorg-core
 
 # NGINX install
-sudo apt-get install -y nginx gunicorn
-sudo apt-get install -y supervisor
+sudo apt-get install -y --force-yes nginx
+sudo apt-get install -y --force-yes supervisor
 
 
 if [ ! -d $HOME/R_libs ]
@@ -61,25 +62,10 @@ if ! [ -L /var/www/myconnectome ]; then
 fi
 
 # Web interface
-if [ ! -d /var/www/templates ]
+if [ ! -d /home/vagrant/myconnectome/templates ]
 then
-  sudo mkdir /var/www/templates
+  sudo mkdir /home/vagrant/myconnectome/templates
 fi
-
-# wcgi file
-if ! [ -f /var/www/myconnectome.wcgi ]; then
-echo """
-#!/home/vagrant/miniconda/bin/python
-import sys, os
-import logging
-logging.basicConfig(stream=sys.stderr)
-sys.path.insert (0,'/var/www')
-os.chdir("/var/www")
-from index import app as application
-""" >/tmp/oljnjkhf
-  sudo cp /tmp/oljnjkhf /var/www/myconnectome.wcgi
-
-sudo chmod +x /var/www/myconnectome.wcgi
 
 # Index script
 if ! [ -f /home/vagrant/myconnectome/index.py ]; then
@@ -200,18 +186,16 @@ if ! [ -f /home/vagrant/myconnectome/templates/index.html ]; then
   sudo cp /tmp/asfdlkjsd /home/vagrant/myconnectome/templates/index.html 
 fi
 
+sudo /etc/init.d/nginx start
+sudo rm /etc/nginx/sites-enabled/default
+
 # NGINX Configuration
 if ! [ -f /etc/nginx/sites-available/flask_project ]; then
   echo """
 server {
-    location / {
-        proxy_pass http://0.0.0.0:5000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-    location /templates {
-        alias  /home/vagrant/myconnectome/templates/;
-    }
+        location / {
+                proxy_pass http://0.0.0.0:5000;
+        }
 }
 """ >/tmp/aijfaef
   sudo cp /tmp/aijfaef /etc/nginx/sites-available/flask_project
@@ -222,14 +206,12 @@ if ! [ -f /etc/supervisor/conf.d/flask_project.conf ]; then
   echo """
 [program:flask_project]
 command = gunicorn index:app -b 0.0.0.0:5000
-directory = /home/vagrant/myconnectome
+directory = /home/vagrant
 user = vagrant
 """ >/tmp/abcde
   sudo cp /tmp/abcde /etc/supervisor/conf.d/flask_project.conf
 fi
 
-sudo /etc/init.d/nginx start
-sudo rm /etc/nginx/sites-enabled/default
 sudo ln -s /etc/nginx/sites-available/flask_project /etc/nginx/sites-enabled/flask_project
 sudo /etc/init.d/nginx restart
 sudo supervisorctl reread
