@@ -50,22 +50,9 @@ then
 fi
 
 sudo apt-get install -y apache2
-sudo a2enmod rewrite
 
-if ! [ -L /var/www ]; then
-  sudo rm -rf /var/www
+if ! [ -L /var/www/myconnectome ]; then
   sudo ln -fs /home/vagrant/myconnectome /var/www
-  echo """
-<VIRTUALHOST *:80>
-Alias /myconnectome/ "/home/vagrant/myconnectome/"
-<Directory /home/vagrant/myconnectome/>
-    Options Indexes FollowSymLinks Includes ExecCGI
-    AllowOverride All
-    Allow from all
-</Directory>
-</VIRTUALHOST>""" > /tmp/asdflj
-  sudo cp /tmp/asdflj /etc/apache2/sites-enabled/001-myconnectome
-  sudo service apache2 restart
 fi
 
 if ! [ -f /home/vagrant/myconnectome/index.html ]; then
@@ -73,34 +60,34 @@ if ! [ -f /home/vagrant/myconnectome/index.html ]; then
 <h1>Myconnectome analyses</h1>
 
 <h2>Timeseries analyses</h2>
-<a href='timeseries/timeseries_analyses.html'>Timeseries analyses</a>
+<a href='myconnectome/timeseries/timeseries_analyses.html'>Timeseries analyses</a>
 <p>
-<a href='timeseries/Make_Timeseries_Heatmaps.html'>Timeseries heatmaps</a>
+<a href='myconnectome/timeseries/Make_Timeseries_Heatmaps.html'>Timeseries heatmaps</a>
 <p>
-<a href='timeseries/Make_timeseries_plots.html'>Timeseries plots</a>
+<a href='myconnectome/timeseries/Make_timeseries_plots.html'>Timeseries plots</a>
 <p>
-<a href='timeseries/behav_heatmap.pdf'>Behavioral timeseries heatmap</a>
+<a href='myconnectome/timeseries/behav_heatmap.pdf'>Behavioral timeseries heatmap</a>
 <p>
-<a href='timeseries/wincorr_heatmap.pdf'>Within-network connectivity timeseries heatmap</a>
+<a href='myconnectome/timeseries/wincorr_heatmap.pdf'>Within-network connectivity timeseries heatmap</a>
 <p>
-<a href='timeseries/wgcna_heatmap.pdf'>Gene expression module timeseries heatmap</a>
+<a href='myconnectome/timeseries/wgcna_heatmap.pdf'>Gene expression module timeseries heatmap</a>
 <p>
-<a href='timeseries/'>Listing of all files</a>
+<a href='myconnectome/timeseries/'>Listing of all files</a>
 
 <h2>RNA-seq analyses</h2>
-<a href='rna-seq/RNAseq_data_preparation.html'>RNA-seq data preparation</a>
+<a href='myconnectome/rna-seq/RNAseq_data_preparation.html'>RNA-seq data preparation</a>
 <p>
-<a href='rna-seq/Run_WGCNA.html'>RNA-seq WGCNA analysis</a>
+<a href='myconnectome/rna-seq/Run_WGCNA.html'>RNA-seq WGCNA analysis</a>
 <p>
-<a href='rna-seq/snyderome/Snyderome_data_preparation.html'>RNA-seq Snyderome analysis</a>
+<a href='myconnectome/rna-seq/snyderome/Snyderome_data_preparation.html'>RNA-seq Snyderome analysis</a>
 <p>
-<a href='rna-seq/'>Listing of all files</a>
+<a href='myconnectome/rna-seq/'>Listing of all files</a>
 
 
 <h2>Metabolomic analyses</h2>
-<a href='metabolomics/Metabolomics_clustering.html'>Metabolomics data preparation</a>
+<a href='myconnectome/metabolomics/Metabolomics_clustering.html'>Metabolomics data preparation</a>
 <p>
-<a href='metabolomics/'>Listing of all files</a>
+<a href='myconnectome/metabolomics/'>Listing of all files</a>
 
 
 """ >/tmp/asfdlkjsd
