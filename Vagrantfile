@@ -60,34 +60,34 @@ if ! [ -f /home/vagrant/myconnectome/index.html ]; then
 <h1>Myconnectome analyses</h1>
 
 <h2>Timeseries analyses</h2>
-<a href='myconnectome/timeseries/timeseries_analyses.html'>Timeseries analyses</a>
+<a href='timeseries/timeseries_analyses.html'>Timeseries analyses</a>
 <p>
-<a href='myconnectome/timeseries/Make_Timeseries_Heatmaps.html'>Timeseries heatmaps</a>
+<a href='timeseries/Make_Timeseries_Heatmaps.html'>Timeseries heatmaps</a>
 <p>
 <a href='myconnectome/timeseries/Make_timeseries_plots.html'>Timeseries plots</a>
 <p>
-<a href='myconnectome/timeseries/behav_heatmap.pdf'>Behavioral timeseries heatmap</a>
+<a href=timeseries/behav_heatmap.pdf'>Behavioral timeseries heatmap</a>
 <p>
-<a href='myconnectome/timeseries/wincorr_heatmap.pdf'>Within-network connectivity timeseries heatmap</a>
+<a href='timeseries/wincorr_heatmap.pdf'>Within-network connectivity timeseries heatmap</a>
 <p>
-<a href='myconnectome/timeseries/wgcna_heatmap.pdf'>Gene expression module timeseries heatmap</a>
+<a href=timeseries/wgcna_heatmap.pdf'>Gene expression module timeseries heatmap</a>
 <p>
-<a href='myconnectome/timeseries/'>Listing of all files</a>
+<a href=timeseries/'>Listing of all files</a>
 
 <h2>RNA-seq analyses</h2>
-<a href='myconnectome/rna-seq/RNAseq_data_preparation.html'>RNA-seq data preparation</a>
+<a href='rna-seq/RNAseq_data_preparation.html'>RNA-seq data preparation</a>
 <p>
-<a href='myconnectome/rna-seq/Run_WGCNA.html'>RNA-seq WGCNA analysis</a>
+<a href='rna-seq/Run_WGCNA.html'>RNA-seq WGCNA analysis</a>
 <p>
-<a href='myconnectome/rna-seq/snyderome/Snyderome_data_preparation.html'>RNA-seq Snyderome analysis</a>
+<a href='rna-seq/snyderome/Snyderome_data_preparation.html'>RNA-seq Snyderome analysis</a>
 <p>
-<a href='myconnectome/rna-seq/'>Listing of all files</a>
+<a href='rna-seq/'>Listing of all files</a>
 
 
 <h2>Metabolomic analyses</h2>
-<a href='myconnectome/metabolomics/Metabolomics_clustering.html'>Metabolomics data preparation</a>
+<a href='metabolomics/Metabolomics_clustering.html'>Metabolomics data preparation</a>
 <p>
-<a href='myconnectome/metabolomics/'>Listing of all files</a>
+<a href='metabolomics/'>Listing of all files</a>
 
 
 """ >/tmp/asfdlkjsd
