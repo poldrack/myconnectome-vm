@@ -83,10 +83,10 @@ AutoIndex(app, browse_root=os.path.curdir)
 def show_analyses():
 
     timeseries_files = {'/var/www/timeseries/timeseries_analyses.html':'Timeseries analyses',
-                 '/var/www/myconnectome/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
-                       '/var/www/myconnectome/timeseries/Make_timeseries_plots.html':'Timeseries plots',
-                       '/var/www/myconnectome/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
-                       '/var/www/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
+                       '/var/www/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
+                       '/var/www/timeseries/Make_timeseries_plots.html':'Timeseries plots',
+                       '/var/www/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
+                       '/var/www/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
                        '/var/www/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
                        '/var/www/timeseries/wgcna_heatmap.pdf':'Gene expression module timeseries heatmap',
                        '/var/www/timeseries':'Listing of all files'}
@@ -96,7 +96,7 @@ def show_analyses():
                        '/var/www/rna-seq/snyderome/Snyderome_data_preparation.html':'RNA-seq Snyderome analysis',
                        '/var/www/rna-seq':'Listing of all files'}
 
-    meta_files =       {'var/www/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
+    meta_files =       {'/var/www/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
                         '/var/www/metabolomics':'Listing of all files'}
 
     # Check if the file exists, render context based on existence            
@@ -215,7 +215,7 @@ user = vagrant
 fi
 
 cd /home/vagrant/myconnectome
-python setup.py install
+$HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
 
 sudo ln -s /etc/nginx/sites-available/flask_project /etc/nginx/sites-enabled/flask_project
 cd /var/www
