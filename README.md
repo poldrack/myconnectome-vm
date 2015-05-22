@@ -15,16 +15,13 @@ Because the software requires a large number of dependencies, we have also creat
 3. If you don't already have it, install [git] (https://git-scm.com/downloads)
 
 4.  cd to the directory where you want to house the project, and then clone the myconnectome vagrant setup:
-
 `git clone https://github.com/poldrack/myconnectome-vm.git`
 
 5. set up the vagrant VM (which may take a little while):
-
 `cd myconnectome-vm
 vagrant up`
 
 6. Assuming no errors in the configuration, connect to the vagrant VM:
-
 `vagrant ssh`
 
 7. Set up the myconnectome project
