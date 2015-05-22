@@ -17,20 +17,20 @@ Because the software requires a large number of dependencies, we have also creat
 4.  cd to the directory where you want to house the project, and then clone the myconnectome vagrant setup:
 `git clone https://github.com/poldrack/myconnectome-vm.git`
 
-5. set up the vagrant VM (which may take a little while):
-`cd myconnectome-vm
-vagrant up`
+5. cd into the vm directory: `cd myconnectome-vm`
 
-6. Assuming no errors in the configuration, connect to the vagrant VM:
+6. set up the vagrant VM (which may take a little while):
+`vagrant up`
+
+7. Assuming no errors in the configuration, connect to the vagrant VM:
 `vagrant ssh`
 
-7. Set up the myconnectome project
+8. cd into the myconnectome directory: `cd myconnectome-vm`
 
-`cd myconnectome
-python setup.py install`
+9. Set up the myconnectome project
+`python setup.py install`
 
 8.  Run the myconnnectome analyses (this will take several hours to complete):
-
 `python myconnectome/scripts/run_everything.py`
 
 9. Using a web browser on your local machine, view the results at [http://192.168.0.20/myconnectome/](http://192.168.0.20/myconnectome/)
