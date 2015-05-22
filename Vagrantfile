@@ -26,6 +26,7 @@ $HOME/miniconda/bin/pip install mygene
 $HOME/miniconda/bin/pip install flask
 $HOME/miniconda/bin/pip install flup
 $HOME/miniconda/bin/pip install gunicorn
+$HOME/miniconda/bin/pip install Flask-AutoIndex
 
 echo 'deb http://cran.rstudio.com/bin/linux/ubuntu precise/' >/tmp/myppa.list
 sudo cp /tmp/myppa.list /etc/apt/sources.list.d/
@@ -70,27 +71,33 @@ fi
 # Index script
 if ! [ -f /home/vagrant/myconnectome/index.py ]; then
   echo """
-from flask import Flask, render_template, Markup
+from flask import Flask, render_template
+from flask.ext.autoindex import AutoIndex
+
 import os
 
 app = Flask(__name__)
+AutoIndex(app, browse_root=os.path.curdir)
 
-@app.route('/')
+@app.route('/status')
 def show_analyses():
 
-    timeseries_files = {'myconnectome/timeseries/timeseries_analyses.html':'Timeseries analyses',
-                 'myconnectome/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
-                       'myconnectome/timeseries/Make_timeseries_plots.html':'Timeseries plots',
-                       'myconnectome/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
-                       'myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
-                       'myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
-                       'myconnectome/timeseries/wgcna_heatmap.pdf':'Gene expression module timeseries heatmap'}
+    timeseries_files = {'/var/www/timeseries/timeseries_analyses.html':'Timeseries analyses',
+                 '/var/www/myconnectome/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
+                       '/var/www/myconnectome/timeseries/Make_timeseries_plots.html':'Timeseries plots',
+                       '/var/www/myconnectome/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
+                       '/var/www/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
+                       '/var/www/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
+                       '/var/www/timeseries/wgcna_heatmap.pdf':'Gene expression module timeseries heatmap',
+                       '/var/www/timeseries':'Listing of all files'}
 
-    rna_files =        {'myconnectome/rna-seq/RNAseq_data_preparation.html':'RNA-seq data preparation',
-                 'myconnectome/rna-seq/Run_WGCNA.html':'RNA-seq WGCNA analysis',
-                       'myconnectome/rna-seq/snyderome/Snyderome_data_preparation.html':'RNA-seq Snyderome analysis'}
+    rna_files =        {'/var/www/rna-seq/RNAseq_data_preparation.html':'RNA-seq data preparation',
+                       '/var/www/rna-seq/Run_WGCNA.html':'RNA-seq WGCNA analysis',
+                       '/var/www/rna-seq/snyderome/Snyderome_data_preparation.html':'RNA-seq Snyderome analysis',
+                       '/var/www/rna-seq':'Listing of all files'}
 
-    meta_files =       {'myconnectome/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation'}
+    meta_files =       {'var/www/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
+                        '/var/www/metabolomics':'Listing of all files'}
 
     # Check if the file exists, render context based on existence            
     timeseries_context = create_context(timeseries_files)
@@ -99,17 +106,16 @@ def show_analyses():
     return render_template('index.html',timeseries_context=timeseries_context,rna_context=rna_context,meta_context=meta_context)
 
 def create_context(link_dict):
-    processing_markup = Markup(' (processing)')
     urls = []; descriptions = []; styles = []; titles = []
     for filename,description in link_dict.iteritems():
         if os.path.exists(filename):
-            urls.append(filename)
+            urls.append(filename.replace('/var/www',''))
             descriptions.append(description)
-            styles.append('color:green;')
+            styles.append('color:rgb(25, 234, 25)')
             titles.append(description)
         else:
             urls.append('#')
-            descriptions.append('%s %s' %(description,processing_markup))
+            descriptions.append('%s %s' %(description,'(processing)'))
             styles.append('color:#ACBAC1;')
             titles.append('PROCESSING')
     return zip(urls,descriptions,styles,titles)
@@ -159,21 +165,18 @@ if ! [ -f /home/vagrant/myconnectome/templates/index.html ]; then
             {% for timeseries_url, timeseries_description, timeseries_style, timeseries_title in timeseries_context %}
     	    <li><a href='{{ timeseries_url }}' style='{{ timeseries_style }}' title='{{ timeseries_title }}'>{{ timeseries_description }}</a></li>
             {% endfor %}
-	    <li><a href='myconnectome/timeseries/'>Listing of all files</a></li>
         </ul>
 	<h2>RNA-seq analyses</h2>
         <ul>
             {% for rna_url, rna_description, rna_style, rna_title in rna_context %}
     	    <li><a href='{{ rna_url }}' style='{{ rna_style }}' title='{{ rna_title }}'>{{ rna_description }}</a></li>
             {% endfor %}
-	    <li><a href='myconnectome/rna-seq/'>Listing of all files</a><li>
         </ul>
 	<h2>Metabolomic analyses</h2>
         <ul>
             {% for meta_url, meta_description, meta_style, meta_title in meta_context %}
     	    <li><a href='{{ meta_url }}' style='{{ meta_style }}' title='{{ meta_title }}'>{{ meta_description }}</a></li>
-            {% endfor %}
-	<li><a href='myconnectome/metabolomics/'>Listing of all files</a></li>		
+            {% endfor %}		
 	</ul>
     </div>
   </div>
