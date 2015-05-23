@@ -94,7 +94,8 @@ def start_analyses():
         p = Popen(['/home/vagrant/miniconda/bin/python', '/home/vagrant/myconnectome/myconnectome/scripts/run_everything.py']
                    stdout=open('/home/vagrant/myconnectome/myconnectome_job.log', 'w'),
                    stderr=open('/home/vagrant/myconnectome/myconnectome_job.err', 'a'),
-                   preexec_fn=os.setpgrp)
+                   preexec_fn=os.setpgrp,
+                   env = os.environ.copy())
         filey = open('/home/vagrant/myconnectome/.started','wb').close()
 
     return redirect('/')
