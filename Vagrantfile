@@ -131,14 +131,14 @@ def show_analyses():
     meta_context,counter = create_context(meta_files,counter)
 
     # The counter determines if we've finished running analyses
-    analysis_status = 'Analyses Are Running'
+    analysis_status = 'Analysis is Running'
     if counter == number_analyses:
         analysis_status = 'Analysis Complete'
 
     return render_template('index.html',timeseries_context=timeseries_context,
                                         rna_context=rna_context,
                                         meta_context=meta_context,
-                                        startbutton=startbutton,
+                                        start_button=start_button,
                                         analysis_status=analysis_status)
 
 def create_context(link_dict,counter):
@@ -197,7 +197,7 @@ if ! [ -f /var/www/templates/index.html ]; then
     <div class='logo_box'><h1>MyConnectome<br/>Analyses</h1>
     <!-- Analysis Start Button-->
     {% if start_button %}
-        <a class='btn btn-default' href='/start' style='left: 40px;bottom: 140px; position:absolute' role='button'>Start Analyses</a>
+        <a class='btn btn-default' href='/start' style='left: 40px;bottom: 140px; position:absolute' role='button'>Start Analysis</a>
     {% else %}
         <a class='btn btn-default' href='#' style='left: 40px;bottom: 140px; position:absolute'; role='button' disabled>{{ analysis_status }}</a>
     {% endif %}
