@@ -91,11 +91,14 @@ def autoindex(path='.'):
 def start_analyses():
 
     if not os.path.exists('/home/vagrant/myconnectome/.started'):
+        my_env = os.environ.copy()
+        my_env['MYCONNECTOME_DIR'] = '/home/vagrant/myconnectome'
+        my_env['WORKBENCH_BIN_DIR'] = '/usr/bin'
         p = Popen(['/home/vagrant/miniconda/bin/python', '/home/vagrant/myconnectome/myconnectome/scripts/run_everything.py'],
                    stdout=open('/home/vagrant/myconnectome/myconnectome_job.log', 'w'),
                    stderr=open('/home/vagrant/myconnectome/myconnectome_job.err', 'a'),
                    preexec_fn=os.setpgrp,
-                   env = os.environ.copy())
+                   env = my_env)
         filey = open('/home/vagrant/myconnectome/.started','wb').close()
 
     return redirect('/')
