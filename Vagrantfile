@@ -46,7 +46,8 @@ sudo apt-get install -y --force-yes supervisor
 if [ ! -d $HOME/R_libs ]
 then
 mkdir $HOME/R_libs
-mkdir /var/www/results
+sudo mkdir /var/www
+sudo mkdir /var/www/results
 echo "export R_LIBS_USER=$HOME/R_libs" >> .bashrc
 fi
 
@@ -86,7 +87,7 @@ def autoindex(path='.'):
     return index.render_autoindex(path)
 
 
-@app.route('/start'):
+@app.route('/start')
 def start_analyses():
 
     if not os.path.exists('/home/vagrant/myconnectome/.started'):
@@ -130,9 +131,9 @@ def show_analyses():
     meta_context,counter = create_context(meta_files,counter)
 
     # The counter determines if we've finished running analyses
-    analysis_status = "Analyses Are Running"
+    analysis_status = 'Analyses Are Running'
     if counter == number_analyses:
-        analysis_status = "Analysis Complete"
+        analysis_status = 'Analysis Complete'
 
     return render_template('index.html',timeseries_context=timeseries_context,
                                         rna_context=rna_context,
@@ -181,7 +182,7 @@ if ! [ -f /var/www/templates/index.html ]; then
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css' rel='stylesheet'>
 
     <style>
-    @import "http://fonts.googleapis.com/css?family=Lato:400,300,700,900";body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,dfn,th,var{font-style:normal;font-weight:400}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:400}body{background:url(https://raw.githubusercontent.com/vsoch/myconnectome-vm/update/flask/assets/img/bg.jpg);font-family:'Lato',sans-serif;font-weight:300;font-size:16px;color:#555;line-height:1.6em;-webkit-font-smoothing:antialiased;-webkit-overflow-scrolling:touch}h1,h2,h3,h4,h5,h6{font-family:'Lato',sans-serif;font-weight:300;color:#444}h1{font-size:40px}p{margin-bottom:20px;font-size:16px}a{color:#ACBAC1;word-wrap:break-word;-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}a:hover,a:focus{color:#4F92AF;text-decoration:none;outline:0}a:before,a:after{-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}.alignleft{text-align:left}.alignright{text-align:right}.aligncenter{text-align:center}.btn{display:inline-block;padding:10px 20px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.428571429;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;background-image:none;border:1px solid transparent;border-radius:0}#wrapper{text-align:center;padding:50px 0;min-height:650px;width:100%;-webkit-background-size:100%;-moz-background-size:100%;-o-background-size:100%;background-size:100%;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover}#wrapper h1{margin-top:60px;margin-bottom:40px;color:#fff;font-size:45px;font-weight:900;letter-spacing:-1px}h2.subtitle{color:#fff;font-size:24px}.logo_box{width:349px;float:left;border-right:1px solid #303030;height:600px;position:relative}h1{padding:12px 70px 12px 20px;position:absolute;right:0;text-align:left;top:25%;float:left;color:#fff;letter-spacing:-1px;font-size:38px}h1 cufon{margin-bottom:-4px}.main_box{float:left;width:500px;height:600px;padding:25px}h2{font-family:Georgia;color:#ffe400;font-size:24px;margin-bottom:10px;margin-top:20px}h2 span{color:#fff;font-size:16px;line-height:26px;font-style:italic}ul.info{width:500px;padding:0;margin:10px 0 0;float:left}ul.info li{margin-bottom:20px;clear:both;float:left}ul.info li p{font-size:13px;line-height:20px;color:#fff;float:left;margin:0}.connect{width:145px;padding-left:20px;float:left;padding-top:20px}.connect img{margin-right:5px} analysisbutton {left: 40px;bottom: 140px; position:absolute}
+    @import "http://fonts.googleapis.com/css?family=Lato:400,300,700,900";body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,dfn,th,var{font-style:normal;font-weight:400}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:400}body{background:url(https://raw.githubusercontent.com/vsoch/myconnectome-vm/update/flask/assets/img/bg.jpg);font-family:'Lato',sans-serif;font-weight:300;font-size:16px;color:#555;line-height:1.6em;-webkit-font-smoothing:antialiased;-webkit-overflow-scrolling:touch}h1,h2,h3,h4,h5,h6{font-family:'Lato',sans-serif;font-weight:300;color:#444}h1{font-size:40px}p{margin-bottom:20px;font-size:16px}a{color:#ACBAC1;word-wrap:break-word;-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}a:hover,a:focus{color:#4F92AF;text-decoration:none;outline:0}a:before,a:after{-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}.alignleft{text-align:left}.alignright{text-align:right}.aligncenter{text-align:center}.btn{display:inline-block;padding:10px 20px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.428571429;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;background-image:none;border:1px solid transparent;border-radius:0}#wrapper{text-align:center;padding:50px 0;min-height:650px;width:100%;-webkit-background-size:100%;-moz-background-size:100%;-o-background-size:100%;background-size:100%;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover}#wrapper h1{margin-top:60px;margin-bottom:40px;color:#fff;font-size:45px;font-weight:900;letter-spacing:-1px}h2.subtitle{color:#fff;font-size:24px}.logo_box{width:349px;float:left;border-right:1px solid #303030;height:600px;position:relative}h1{padding:12px 70px 12px 20px;position:absolute;right:0;text-align:left;top:25%;float:left;color:#fff;letter-spacing:-1px;font-size:38px}h1 cufon{margin-bottom:-4px}.main_box{float:left;width:500px;height:600px;padding:25px}h2{font-family:Georgia;color:#ffe400;font-size:24px;margin-bottom:10px;margin-top:20px}h2 span{color:#fff;font-size:16px;line-height:26px;font-style:italic}ul.info{width:500px;padding:0;margin:10px 0 0;float:left}ul.info li{margin-bottom:20px;clear:both;float:left}ul.info li p{font-size:13px;line-height:20px;color:#fff;float:left;margin:0}.connect{width:145px;padding-left:20px;float:left;padding-top:20px}.connect img{margin-right:5px}
     </style>
     
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -196,9 +197,9 @@ if ! [ -f /var/www/templates/index.html ]; then
     <div class='logo_box'><h1>MyConnectome<br/>Analyses</h1>
     <!-- Analysis Start Button-->
     {% if start_button %}
-        <a class="btn btn-default" href="/start" role="button">Start Analyses</a>
+        <a class='btn btn-default' href='/start' style='left: 40px;bottom: 140px; position:absolute' role='button'>Start Analyses</a>
     {% else %}
-        <a class="btn btn-default" href="#" role="button" disabled>{{ analysis_status }}</a>
+        <a class='btn btn-default' href='#' style='left: 40px;bottom: 140px; position:absolute'; role='button' disabled>{{ analysis_status }}</a>
     {% endif %}
 
     </div>          
@@ -266,6 +267,7 @@ sudo /etc/init.d/nginx restart
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start flask_project
+echo "Open browser to 192.168.0.20:5000"
 
 SCRIPT
 
