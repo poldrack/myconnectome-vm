@@ -11,6 +11,7 @@ then
  chmod +x miniconda.sh
  ./miniconda.sh -b
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .bashrc
+ echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
 fi
 
 # install nipype dependencies
@@ -49,6 +50,7 @@ mkdir $HOME/R_libs
 sudo mkdir /var/www
 sudo mkdir /var/www/results
 echo "export R_LIBS_USER=$HOME/R_libs" >> .bashrc
+echo "export R_LIBS_USER=$HOME/R_libs" >> .env
 fi
 
 
@@ -57,6 +59,8 @@ then
   git clone https://github.com/poldrack/myconnectome.git $HOME/myconnectome
   echo "export MYCONNECTOME_DIR=$HOME/myconnectome" >> .bashrc
   echo "export WORKBENCH_BIN_DIR=/usr/bin" >> .bashrc
+  echo "export MYCONNECTOME_DIR=$HOME/myconnectome" >> .env
+  echo "export WORKBENCH_BIN_DIR=/usr/bin" >> .env
   cd $HOME/myconnectome
 fi
 
@@ -267,9 +271,11 @@ user = vagrant
   sudo cp /tmp/abcde /etc/supervisor/conf.d/flask_project.conf
 fi
 
+# Install my connectome and start analyses
 cd /home/vagrant/myconnectome
 $HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
 
+# Start the flask application via supervisor
 sudo ln -s /etc/nginx/sites-available/flask_project /etc/nginx/sites-enabled/flask_project
 cd /var/www
 sudo /etc/init.d/nginx restart
@@ -277,6 +283,12 @@ sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start flask_project
 echo "Open browser to 192.168.0.20:5000"
+
+# Start the analysis for the user
+touch /home/vagrant/myconnectome/.started
+source /home/vagrant/.env
+$HOME/miniconda/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
+
 
 SCRIPT
 
