@@ -94,6 +94,7 @@ def start_analyses():
         my_env = os.environ.copy()
         my_env['MYCONNECTOME_DIR'] = '/home/vagrant/myconnectome'
         my_env['WORKBENCH_BIN_DIR'] = '/usr/bin'
+        os.chdir('/home/vagrant/myconnectome')
         p = Popen(['/home/vagrant/miniconda/bin/python', '/home/vagrant/myconnectome/myconnectome/scripts/run_everything.py'],
                    stdout=open('/home/vagrant/myconnectome/myconnectome_job.log', 'w'),
                    stderr=open('/home/vagrant/myconnectome/myconnectome_job.err', 'a'),
