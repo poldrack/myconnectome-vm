@@ -90,52 +90,28 @@ index = AutoIndex(app, browse_root='/var/www/results',add_url_rules=False)
 def autoindex(path='.'):
     return index.render_autoindex(path)
 
-
-@app.route('/start')
-def start_analyses():
-
-    if not os.path.exists('/home/vagrant/myconnectome/.started'):
-        my_env = os.environ.copy()
-        my_env['MYCONNECTOME_DIR'] = '/home/vagrant/myconnectome'
-        my_env['WORKBENCH_BIN_DIR'] = '/usr/bin'
-        my_env['R_LIBS_USER'] = '/home/vagrant/R_libs'
-        os.chdir('/home/vagrant/myconnectome')
-        p = Popen(['/home/vagrant/miniconda/bin/python', '/home/vagrant/myconnectome/myconnectome/scripts/run_everything.py'],
-                   stdout=open('/home/vagrant/myconnectome/myconnectome_job.log', 'w'),
-                   stderr=open('/home/vagrant/myconnectome/myconnectome_job.err', 'a'),
-                   preexec_fn=os.setpgrp,
-                   env = my_env)
-        filey = open('/home/vagrant/myconnectome/.started','wb').close()
-
-    return redirect('/')
-
 @app.route('/')
 def show_analyses():
 
-    timeseries_files = {'/var/www/results/timeseries/timeseries_analyses.html':'Timeseries analyses',
-                       '/var/www/results/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
-                       '/var/www/results/timeseries/Make_timeseries_plots.html':'Timeseries plots',
-                       '/var/www/results/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
-                       '/var/www/results/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
-                       '/var/www/results/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
-                       '/var/www/results/timeseries/wgcna_heatmap.pdf':'Gene expression module timeseries heatmap',
-                       '/var/www/results/timeseries':'Listing of all files'}
+    timeseries_files = {'/var/www/results/myconnectome/timeseries/timeseries_analyses.html':'Timeseries analyses',
+                       '/var/www/results/myconnectome/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
+                       '/var/www/results/myconnectome/timeseries/Make_timeseries_plots.html':'Timeseries plots',
+                       '/var/www/results/myconnectome/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
+                       '/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
+                       '/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
+                       '/var/www/results/myconnectome/timeseries/wgcna_heatmap.pdf':'Gene expression module timeseries heatmap',
+                       '/var/www/results/myconnectome/timeseries':'Listing of all files'}
 
-    rna_files =        {'/var/www/results/rna-seq/RNAseq_data_preparation.html':'RNA-seq data preparation',
-                       '/var/www/results/rna-seq/Run_WGCNA.html':'RNA-seq WGCNA analysis',
-                       '/var/www/results/rna-seq/snyderome/Snyderome_data_preparation.html':'RNA-seq Snyderome analysis',
-                       '/var/www/results/rna-seq':'Listing of all files'}
+    rna_files =        {'/var/www/results/myconnectome/rna-seq/RNAseq_data_preparation.html':'RNA-seq data preparation',
+                       '/var/www/results/myconnectome/rna-seq/Run_WGCNA.html':'RNA-seq WGCNA analysis',
+                       '/var/www/results/myconnectome/rna-seq/snyderome/Snyderome_data_preparation.html':'RNA-seq Snyderome analysis',
+                       '/var/www/results/myconnectome/rna-seq':'Listing of all files'}
 
-    meta_files =       {'/var/www/results/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
-                        '/var/www/results/metabolomics':'Listing of all files'}
+    meta_files =       {'/var/www/results/myconnectome/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
+                        '/var/www/results/myconnectome/metabolomics':'Listing of all files'}
 
     # How many green links should we have?
     number_analyses = len(meta_files) + len(rna_files) + len(timeseries_files)
-
-    # If analyses not started, show button
-    start_button = True
-    if os.path.exists('/home/vagrant/myconnectome/.started'):
-        start_button = False
 
     # Check if the file exists, render context based on existence            
     counter = 0
@@ -151,7 +127,6 @@ def show_analyses():
     return render_template('index.html',timeseries_context=timeseries_context,
                                         rna_context=rna_context,
                                         meta_context=meta_context,
-                                        start_button=start_button,
                                         analysis_status=analysis_status)
 
 def create_context(link_dict,counter):
@@ -208,12 +183,8 @@ if ! [ -f /var/www/templates/index.html ]; then
 <div id='wrapper'>
   <div class='container'>
     <div class='logo_box'><h1>MyConnectome<br/>Analyses</h1>
-    <!-- Analysis Start Button-->
-    {% if start_button %}
-        <a class='btn btn-default' href='/start' style='left: 40px;bottom: 140px; position:absolute' role='button'>Start Analysis</a>
-    {% else %}
-        <a class='btn btn-default' href='#' style='left: 40px;bottom: 140px; position:absolute'; role='button' disabled>{{ analysis_status }}</a>
-    {% endif %}
+    <!-- Analysis Status Button-->
+    <a class='btn btn-default' href='#' style='left: 40px;bottom: 140px; position:absolute'; role='button' disabled>{{ analysis_status }}</a>
 
     </div>          
       <div class='main_box'>
