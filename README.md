@@ -33,4 +33,4 @@ Because the software requires a large number of dependencies, we have also creat
 8.  Run the myconnnectome analyses (this will take several hours to complete):
 `python myconnectome/scripts/run_everything.py`
 
-9. Using a web browser on your local machine, view the results at [http://192.168.0.20/myconnectome/](http://192.168.0.20/myconnectome/)
+9. Using a web browser on your local machine, view the results at [http://192.168.0.20/](http://192.168.0.20/)
