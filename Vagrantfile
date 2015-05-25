@@ -208,7 +208,7 @@ if ! [ -f /var/www/templates/index.html ]; then
             {% endfor %}		
 	</ul>
   <h2><a href="https://github.com/poldrack/myconnectome-vm">Learn more about the MyConnectome Virtual Machine</a></h2>
-  <h2><a href="https://myconnectome.org">Learn more about the MyConnectome Project</a></h2>
+  <h2><a href="http://myconnectome.org">Learn more about the MyConnectome Project</a></h2>
   
     </div>
   </div>
@@ -259,7 +259,8 @@ sudo /etc/init.d/nginx restart
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start flask_project
-echo "Open browser to 192.168.0.20:5000"
+echo ""
+echo "Open your browser to 192.168.0.20:5000 to view analysis"
 
 # Start the analysis for the user
 if ! [ -f $HOME/myconnectome/.started ]; then
