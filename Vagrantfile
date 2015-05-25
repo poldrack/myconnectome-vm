@@ -93,22 +93,22 @@ def autoindex(path='.'):
 @app.route('/')
 def show_analyses():
 
-    timeseries_files = {'/var/www/results/myconnectome/timeseries/timeseries_analyses.html':'Timeseries analyses',
-                       '/var/www/results/myconnectome/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
-                       '/var/www/results/myconnectome/timeseries/Make_timeseries_plots.html':'Timeseries plots',
-                       '/var/www/results/myconnectome/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
-                       '/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
-                       '/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
-                       '/var/www/results/myconnectome/timeseries/wgcna_heatmap.pdf':'Gene expression module timeseries heatmap',
-                       '/var/www/results/myconnectome/timeseries':'Listing of all files'}
+    timeseries_files = [('/var/www/results/myconnectome/timeseries/timeseries_analyses.html','Timeseries analyses'),
+                       ('/var/www/results/myconnectome/timeseries/Make_Timeseries_Heatmaps.html','Timeseries heatmaps'),
+                       ('/var/www/results/myconnectome/timeseries/Make_timeseries_plots.html','Timeseries plots'),
+                       ('/var/www/results/myconnectome/timeseries/behav_heatmap.pdf','Behavioral timeseries heatmap'),
+                       ('/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf','Within-network connectivity timeseries heatmap'),
+                       ('/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf','Within-network connectivity timeseries heatmap'),
+                       ('/var/www/results/myconnectome/timeseries/wgcna_heatmap.pdf','Gene expression module timeseries heatmap'),
+                       ('/var/www/results/myconnectome/timeseries','Listing of all files')]
 
-    rna_files =        {'/var/www/results/myconnectome/rna-seq/RNAseq_data_preparation.html':'RNA-seq data preparation',
-                       '/var/www/results/myconnectome/rna-seq/Run_WGCNA.html':'RNA-seq WGCNA analysis',
-                       '/var/www/results/myconnectome/rna-seq/snyderome/Snyderome_data_preparation.html':'RNA-seq Snyderome analysis',
-                       '/var/www/results/myconnectome/rna-seq':'Listing of all files'}
+    rna_files =        [('/var/www/results/myconnectome/rna-seq/RNAseq_data_preparation.html','RNA-seq data preparation'),
+                       ('/var/www/results/myconnectome/rna-seq/Run_WGCNA.html','RNA-seq WGCNA analysis'),
+                       ('/var/www/results/myconnectome/rna-seq/snyderome/Snyderome_data_preparation.html','RNA-seq Snyderome analysis'),
+                       ('/var/www/results/myconnectome/rna-seq','Listing of all files')]
 
-    meta_files =       {'/var/www/results/myconnectome/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
-                        '/var/www/results/myconnectome/metabolomics':'Listing of all files'}
+    meta_files =       [('/var/www/results/myconnectome/metabolomics/Metabolomics_clustering.html','Metabolomics data preparation'),
+                        ('/var/www/results/myconnectome/metabolomics','Listing of all files')]
 
     # How many green links should we have?
     number_analyses = len(meta_files) + len(rna_files) + len(timeseries_files)
@@ -129,9 +129,11 @@ def show_analyses():
                                         meta_context=meta_context,
                                         analysis_status=analysis_status)
 
-def create_context(link_dict,counter):
+def create_context(links,counter):
     urls = []; descriptions = []; styles = []; titles = []
-    for filename,description in link_dict.iteritems():
+    for link in links:
+        filename = link[0]
+        description = link[1]
         if os.path.exists(filename):
             counter+=1
             urls.append(filename.replace('/var/www',''))
