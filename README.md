@@ -22,15 +22,11 @@ Because the software requires a large number of dependencies, we have also creat
 6. set up the vagrant VM (which may take a little while):
 `vagrant up`
 
-7. Assuming no errors in the configuration, connect to the vagrant VM:
+7.  Step 6 will automatically start the analysis processes, which will take several hours to complete.  Using a web browser on your local machine, view the results at [http://192.168.0.20/](http://192.168.0.20/)
+
+## Digging deeper
+
+If you wish to log into the virtual machine and look more closely at the results, you can do so from within the directory containing the Vagrantfile, using this command:
+
 `vagrant ssh`
 
-8. cd into the myconnectome directory: `cd myconnectome-vm`
-
-9. Set up the myconnectome project
-`python setup.py install`
-
-8.  Run the myconnnectome analyses (this will take several hours to complete):
-`python myconnectome/scripts/run_everything.py`
-
-9. Using a web browser on your local machine, view the results at [http://192.168.0.20/](http://192.168.0.20/)
