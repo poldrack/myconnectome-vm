@@ -244,7 +244,7 @@ user = vagrant
 fi
 
 # Install my connectome and start analyses
-if ! [-f $HOME/myconnectome/.started ]; then
+if ! [ -f $HOME/myconnectome/.started ]; then
   cd /home/vagrant/myconnectome
   $HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
 fi
@@ -259,7 +259,7 @@ sudo supervisorctl start flask_project
 echo "Open browser to 192.168.0.20:5000"
 
 # Start the analysis for the user
-if ! [-f $HOME/myconnectome/.started ]; then
+if ! [ -f $HOME/myconnectome/.started ]; then
   touch /home/vagrant/myconnectome/.started
   source /home/vagrant/.env
   $HOME/miniconda/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
