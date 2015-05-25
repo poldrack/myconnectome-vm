@@ -31,3 +31,11 @@ If you wish to log into the virtual machine and look more closely at the results
 `vagrant ssh`
 
 The code for the analyses along with all of the results are located in the myconnectome directory.
+
+## Copying the data
+
+If you wish to copy the data and results from the virtual machine to your host machine, you can do so by logging into the VM (using "vagrant ssh") and executing the following command:
+
+`cp -r myconnectome /vagrant/`
+
+This will place a copy of the results in the directory where the Vagrantfile is located on your host machine.
