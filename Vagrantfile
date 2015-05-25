@@ -81,6 +81,7 @@ from flask import Flask, render_template, redirect
 from flask.ext.autoindex import AutoIndex
 from subprocess import Popen
 import os
+from collections import OrderedDict
 
 app = Flask(__name__)
 index = AutoIndex(app, browse_root='/var/www/results',add_url_rules=False)
@@ -93,22 +94,22 @@ def autoindex(path='.'):
 @app.route('/')
 def show_analyses():
 
-    timeseries_files = {'/var/www/results/myconnectome/timeseries/timeseries_analyses.html':'Timeseries analyses',
+    timeseries_files = OrderedDict({'/var/www/results/myconnectome/timeseries/timeseries_analyses.html':'Timeseries analyses',
                        '/var/www/results/myconnectome/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
                        '/var/www/results/myconnectome/timeseries/Make_timeseries_plots.html':'Timeseries plots',
                        '/var/www/results/myconnectome/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
                        '/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
                        '/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
                        '/var/www/results/myconnectome/timeseries/wgcna_heatmap.pdf':'Gene expression module timeseries heatmap',
-                       '/var/www/results/myconnectome/timeseries':'Listing of all files'}
+                       '/var/www/results/myconnectome/timeseries':'Listing of all files'})
 
-    rna_files =        {'/var/www/results/myconnectome/rna-seq/RNAseq_data_preparation.html':'RNA-seq data preparation',
+    rna_files =        OrderedDict({'/var/www/results/myconnectome/rna-seq/RNAseq_data_preparation.html':'RNA-seq data preparation',
                        '/var/www/results/myconnectome/rna-seq/Run_WGCNA.html':'RNA-seq WGCNA analysis',
                        '/var/www/results/myconnectome/rna-seq/snyderome/Snyderome_data_preparation.html':'RNA-seq Snyderome analysis',
-                       '/var/www/results/myconnectome/rna-seq':'Listing of all files'}
+                       '/var/www/results/myconnectome/rna-seq':'Listing of all files'})
 
-    meta_files =       {'/var/www/results/myconnectome/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
-                        '/var/www/results/myconnectome/metabolomics':'Listing of all files'}
+    meta_files =       OrderedDict({'/var/www/results/myconnectome/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
+                        '/var/www/results/myconnectome/metabolomics':'Listing of all files'})
 
     # How many green links should we have?
     number_analyses = len(meta_files) + len(rna_files) + len(timeseries_files)
@@ -243,8 +244,10 @@ user = vagrant
 fi
 
 # Install my connectome and start analyses
-cd /home/vagrant/myconnectome
-$HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
+if ! [-f $HOME/myconnectome/.started ]; then
+  cd /home/vagrant/myconnectome
+  $HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
+fi
 
 # Start the flask application via supervisor
 sudo ln -s /etc/nginx/sites-available/flask_project /etc/nginx/sites-enabled/flask_project
@@ -256,10 +259,12 @@ sudo supervisorctl start flask_project
 echo "Open browser to 192.168.0.20:5000"
 
 # Start the analysis for the user
-touch /home/vagrant/myconnectome/.started
-source /home/vagrant/.env
-$HOME/miniconda/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
-
+if ! [-f $HOME/myconnectome/.started ]; then
+  touch /home/vagrant/myconnectome/.started
+  source /home/vagrant/.env
+  $HOME/miniconda/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
+fi
+  
 
 SCRIPT
 
