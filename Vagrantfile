@@ -141,7 +141,7 @@ def create_context(link_dict,counter):
             titles.append(description)
         else:
             urls.append('#')
-            descriptions.append('%s %s' %(description,'(processing)'))
+            descriptions.append('%s %s' %(description,'(in progress)'))
             styles.append('color:#ACBAC1;')
             titles.append('PROCESSING')
     return zip(urls,descriptions,styles,titles),counter
@@ -207,6 +207,9 @@ if ! [ -f /var/www/templates/index.html ]; then
     	    <li><a href='{{ meta_url }}' style='{{ meta_style }}' title='{{ meta_title }}'>{{ meta_description }}</a></li>
             {% endfor %}		
 	</ul>
+  <h2><a href="https://github.com/poldrack/myconnectome-vm">Learn more about the MyConnectome Virtual Machine</a></h2>
+  <h2><a href="https://myconnectome.org">Learn more about the MyConnectome Project</a></h2>
+  
     </div>
   </div>
 </div>
