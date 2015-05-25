@@ -11,6 +11,7 @@ then
  chmod +x miniconda.sh
  ./miniconda.sh -b
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .bashrc
+ echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
 fi
 
 # install nipype dependencies
@@ -46,7 +47,10 @@ sudo apt-get install -y --force-yes supervisor
 if [ ! -d $HOME/R_libs ]
 then
 mkdir $HOME/R_libs
+sudo mkdir /var/www
+sudo mkdir /var/www/results
 echo "export R_LIBS_USER=$HOME/R_libs" >> .bashrc
+echo "export R_LIBS_USER=$HOME/R_libs" >> .env
 fi
 
 
@@ -55,55 +59,81 @@ then
   git clone https://github.com/poldrack/myconnectome.git $HOME/myconnectome
   echo "export MYCONNECTOME_DIR=$HOME/myconnectome" >> .bashrc
   echo "export WORKBENCH_BIN_DIR=/usr/bin" >> .bashrc
+  echo "export MYCONNECTOME_DIR=$HOME/myconnectome" >> .env
+  echo "export WORKBENCH_BIN_DIR=/usr/bin" >> .env
   cd $HOME/myconnectome
 fi
 
 if ! [ -L /var/www/myconnectome ]; then
-  sudo ln -fs /home/vagrant/myconnectome /var/www
+  sudo ln -fs /home/vagrant/myconnectome /var/www/results
 fi
 
+# Web interface
+if [ ! -d /var/www/templates ]
+then
+  sudo mkdir /var/www/templates
+fi
 
 # Index script
-if ! [ -f /home/vagrant/myconnectome/index.py ]; then
+if ! [ -f /var/www/index.py ]; then
   echo """
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask.ext.autoindex import AutoIndex
-
+from subprocess import Popen
 import os
 
 app = Flask(__name__)
-AutoIndex(app, browse_root=os.path.curdir)
+index = AutoIndex(app, browse_root='/var/www/results',add_url_rules=False)
 
-@app.route('/status')
+@app.route('/results')
+@app.route('/results/<path:path>')
+def autoindex(path='.'):
+    return index.render_autoindex(path)
+
+@app.route('/')
 def show_analyses():
 
-    timeseries_files = {'/var/www/timeseries/timeseries_analyses.html':'Timeseries analyses',
-                       '/var/www/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
-                       '/var/www/timeseries/Make_timeseries_plots.html':'Timeseries plots',
-                       '/var/www/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
-                       '/var/www/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
-                       '/var/www/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
-                       '/var/www/timeseries/wgcna_heatmap.pdf':'Gene expression module timeseries heatmap',
-                       '/var/www/timeseries':'Listing of all files'}
+    timeseries_files = {'/var/www/results/myconnectome/timeseries/timeseries_analyses.html':'Timeseries analyses',
+                       '/var/www/results/myconnectome/timeseries/Make_Timeseries_Heatmaps.html':'Timeseries heatmaps',
+                       '/var/www/results/myconnectome/timeseries/Make_timeseries_plots.html':'Timeseries plots',
+                       '/var/www/results/myconnectome/timeseries/behav_heatmap.pdf':'Behavioral timeseries heatmap',
+                       '/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
+                       '/var/www/results/myconnectome/timeseries/wincorr_heatmap.pdf':'Within-network connectivity timeseries heatmap',
+                       '/var/www/results/myconnectome/timeseries/wgcna_heatmap.pdf':'Gene expression module timeseries heatmap',
+                       '/var/www/results/myconnectome/timeseries':'Listing of all files'}
 
-    rna_files =        {'/var/www/rna-seq/RNAseq_data_preparation.html':'RNA-seq data preparation',
-                       '/var/www/rna-seq/Run_WGCNA.html':'RNA-seq WGCNA analysis',
-                       '/var/www/rna-seq/snyderome/Snyderome_data_preparation.html':'RNA-seq Snyderome analysis',
-                       '/var/www/rna-seq':'Listing of all files'}
+    rna_files =        {'/var/www/results/myconnectome/rna-seq/RNAseq_data_preparation.html':'RNA-seq data preparation',
+                       '/var/www/results/myconnectome/rna-seq/Run_WGCNA.html':'RNA-seq WGCNA analysis',
+                       '/var/www/results/myconnectome/rna-seq/snyderome/Snyderome_data_preparation.html':'RNA-seq Snyderome analysis',
+                       '/var/www/results/myconnectome/rna-seq':'Listing of all files'}
 
-    meta_files =       {'/var/www/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
-                        '/var/www/metabolomics':'Listing of all files'}
+    meta_files =       {'/var/www/results/myconnectome/metabolomics/Metabolomics_clustering.html':'Metabolomics data preparation',
+                        '/var/www/results/myconnectome/metabolomics':'Listing of all files'}
+
+    # How many green links should we have?
+    number_analyses = len(meta_files) + len(rna_files) + len(timeseries_files)
 
     # Check if the file exists, render context based on existence            
-    timeseries_context = create_context(timeseries_files)
-    rna_context = create_context(rna_files)
-    meta_context = create_context(meta_files)
-    return render_template('index.html',timeseries_context=timeseries_context,rna_context=rna_context,meta_context=meta_context)
+    counter = 0
+    timeseries_context,counter = create_context(timeseries_files,counter)
+    rna_context,counter = create_context(rna_files,counter)
+    meta_context,counter = create_context(meta_files,counter)
 
-def create_context(link_dict):
+    # The counter determines if we've finished running analyses
+    analysis_status = 'Analysis is Running'
+    if counter == number_analyses:
+        analysis_status = 'Analysis Complete'
+
+    return render_template('index.html',timeseries_context=timeseries_context,
+                                        rna_context=rna_context,
+                                        meta_context=meta_context,
+                                        analysis_status=analysis_status)
+
+def create_context(link_dict,counter):
     urls = []; descriptions = []; styles = []; titles = []
     for filename,description in link_dict.iteritems():
         if os.path.exists(filename):
+            counter+=1
             urls.append(filename.replace('/var/www',''))
             descriptions.append(description)
             styles.append('color:rgb(25, 234, 25)')
@@ -113,7 +143,7 @@ def create_context(link_dict):
             descriptions.append('%s %s' %(description,'(processing)'))
             styles.append('color:#ACBAC1;')
             titles.append('PROCESSING')
-    return zip(urls,descriptions,styles,titles)
+    return zip(urls,descriptions,styles,titles),counter
 
 if __name__ == '__main__':
     app.debug = False
@@ -123,7 +153,7 @@ if __name__ == '__main__':
 fi
 
 # Index Template
-if ! [ -f /home/vagrant/myconnectome/templates/index.html ]; then
+if ! [ -f /var/www/templates/index.html ]; then
   echo """
 <!DOCTYPE html>
 <html lang='en'>
@@ -133,7 +163,6 @@ if ! [ -f /home/vagrant/myconnectome/templates/index.html ]; then
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <meta name='description' content='MyConnectome Analyses, Poldracklab'>
     <meta name='author' content='Poldracklab'>
-    <link rel='shortcut icon' href='assets/img/favicon.png'>
 
     <title>My Connectome Analyses</title>
 
@@ -141,7 +170,7 @@ if ! [ -f /home/vagrant/myconnectome/templates/index.html ]; then
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css' rel='stylesheet'>
 
     <style>
-    @import "http://fonts.googleapis.com/css?family=Lato:400,300,700,900";body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,dfn,th,var{font-style:normal;font-weight:400}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:400}body{background:url(https://raw.githubusercontent.com/vsoch/myconnectome-vm/update/flask/assets/img/bg.jpg);font-family:'Lato',sans-serif;font-weight:300;font-size:16px;color:#555;line-height:1.6em;-webkit-font-smoothing:antialiased;-webkit-overflow-scrolling:touch}h1,h2,h3,h4,h5,h6{font-family:'Lato',sans-serif;font-weight:300;color:#444}h1{font-size:40px}p{margin-bottom:20px;font-size:16px}a{color:#ACBAC1;word-wrap:break-word;-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}a:hover,a:focus{color:#4F92AF;text-decoration:none;outline:0}a:before,a:after{-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}.alignleft{text-align:left}.alignright{text-align:right}.aligncenter{text-align:center}.btn{display:inline-block;padding:10px 20px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.428571429;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;background-image:none;border:1px solid transparent;border-radius:0}#wrapper{text-align:center;padding:50px 0;min-height:650px;width:100%;-webkit-background-size:100%;-moz-background-size:100%;-o-background-size:100%;background-size:100%;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover}#wrapper h1{margin-top:60px;margin-bottom:40px;color:#fff;font-size:45px;font-weight:900;letter-spacing:-1px}h2.subtitle{color:#fff;font-size:24px}.logo_box{width:349px;float:left;border-right:1px solid #303030;height:280px;position:relative}h1{padding:12px 70px 12px 20px;position:absolute;right:0;text-align:left;top:25%;float:left;color:#fff;letter-spacing:-1px;font-size:38px}h1 cufon{margin-bottom:-4px}.main_box{float:left;width:500px;height:95px;padding:25px}h2{font-family:Georgia;color:#ffe400;font-size:24px;margin-bottom:10px;margin-top:20px}h2 span{color:#fff;font-size:16px;line-height:26px;font-style:italic}ul.info{width:500px;padding:0;margin:10px 0 0;float:left}ul.info li{margin-bottom:20px;clear:both;float:left}ul.info li p{font-size:13px;line-height:20px;color:#fff;float:left;margin:0}.connect{width:145px;padding-left:20px;float:left;padding-top:20px}.connect img{margin-right:5px}
+    @import "http://fonts.googleapis.com/css?family=Lato:400,300,700,900";body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,dfn,th,var{font-style:normal;font-weight:400}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:400}body{background:url(https://raw.githubusercontent.com/vsoch/myconnectome-vm/update/flask/assets/img/bg.jpg);font-family:'Lato',sans-serif;font-weight:300;font-size:16px;color:#555;line-height:1.6em;-webkit-font-smoothing:antialiased;-webkit-overflow-scrolling:touch}h1,h2,h3,h4,h5,h6{font-family:'Lato',sans-serif;font-weight:300;color:#444}h1{font-size:40px}p{margin-bottom:20px;font-size:16px}a{color:#ACBAC1;word-wrap:break-word;-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}a:hover,a:focus{color:#4F92AF;text-decoration:none;outline:0}a:before,a:after{-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}.alignleft{text-align:left}.alignright{text-align:right}.aligncenter{text-align:center}.btn{display:inline-block;padding:10px 20px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.428571429;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;background-image:none;border:1px solid transparent;border-radius:0}#wrapper{text-align:center;padding:50px 0;min-height:650px;width:100%;-webkit-background-size:100%;-moz-background-size:100%;-o-background-size:100%;background-size:100%;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover}#wrapper h1{margin-top:60px;margin-bottom:40px;color:#fff;font-size:45px;font-weight:900;letter-spacing:-1px}h2.subtitle{color:#fff;font-size:24px}.logo_box{width:349px;float:left;border-right:1px solid #303030;height:600px;position:relative}h1{padding:12px 70px 12px 20px;position:absolute;right:0;text-align:left;top:25%;float:left;color:#fff;letter-spacing:-1px;font-size:38px}h1 cufon{margin-bottom:-4px}.main_box{float:left;width:500px;height:600px;padding:25px}h2{font-family:Georgia;color:#ffe400;font-size:24px;margin-bottom:10px;margin-top:20px}h2 span{color:#fff;font-size:16px;line-height:26px;font-style:italic}ul.info{width:500px;padding:0;margin:10px 0 0;float:left}ul.info li{margin-bottom:20px;clear:both;float:left}ul.info li p{font-size:13px;line-height:20px;color:#fff;float:left;margin:0}.connect{width:145px;padding-left:20px;float:left;padding-top:20px}.connect img{margin-right:5px}
     </style>
     
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -153,7 +182,11 @@ if ! [ -f /home/vagrant/myconnectome/templates/index.html ]; then
   <body>
 <div id='wrapper'>
   <div class='container'>
-    <div class='logo_box'><h1>MyConnectome<br/>Analyses</h1></div>          
+    <div class='logo_box'><h1>MyConnectome<br/>Analyses</h1>
+    <!-- Analysis Status Button-->
+    <a class='btn btn-default' href='#' style='left: 40px;bottom: 140px; position:absolute'; role='button' disabled>{{ analysis_status }}</a>
+
+    </div>          
       <div class='main_box'>
 	<h2>Timeseries analyses</h2>
 	<ul>
@@ -181,7 +214,7 @@ if ! [ -f /home/vagrant/myconnectome/templates/index.html ]; then
   </body>
 </html>
 """ >/tmp/asfdlkjsd
-  sudo cp /tmp/asfdlkjsd /home/vagrant/myconnectome/templates/index.html 
+  sudo cp /tmp/asfdlkjsd /var/www/templates/index.html 
 fi
 
 sudo /etc/init.d/nginx start
@@ -209,15 +242,24 @@ user = vagrant
   sudo cp /tmp/abcde /etc/supervisor/conf.d/flask_project.conf
 fi
 
+# Install my connectome and start analyses
 cd /home/vagrant/myconnectome
 $HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
 
+# Start the flask application via supervisor
 sudo ln -s /etc/nginx/sites-available/flask_project /etc/nginx/sites-enabled/flask_project
 cd /var/www
 sudo /etc/init.d/nginx restart
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start flask_project
+echo "Open browser to 192.168.0.20:5000"
+
+# Start the analysis for the user
+touch /home/vagrant/myconnectome/.started
+source /home/vagrant/.env
+$HOME/miniconda/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
+
 
 SCRIPT
 
