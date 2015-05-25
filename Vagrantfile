@@ -81,6 +81,7 @@ from flask import Flask, render_template, redirect
 from flask.ext.autoindex import AutoIndex
 from subprocess import Popen
 import os
+from collections import OrderedDict
 
 app = Flask(__name__)
 index = AutoIndex(app, browse_root='/var/www/results',add_url_rules=False)
@@ -142,7 +143,7 @@ def create_context(links,counter):
             titles.append(description)
         else:
             urls.append('#')
-            descriptions.append('%s %s' %(description,'(processing)'))
+            descriptions.append('%s %s' %(description,'(in progress)'))
             styles.append('color:#ACBAC1;')
             titles.append('PROCESSING')
     return zip(urls,descriptions,styles,titles),counter
@@ -208,6 +209,9 @@ if ! [ -f /var/www/templates/index.html ]; then
     	    <li><a href='{{ meta_url }}' style='{{ meta_style }}' title='{{ meta_title }}'>{{ meta_description }}</a></li>
             {% endfor %}		
 	</ul>
+  <h2><a href="https://github.com/poldrack/myconnectome-vm">Learn more about the MyConnectome Virtual Machine</a></h2>
+  <h2><a href="http://myconnectome.org">Learn more about the MyConnectome Project</a></h2>
+  
     </div>
   </div>
 </div>
@@ -245,8 +249,10 @@ user = vagrant
 fi
 
 # Install my connectome and start analyses
-cd /home/vagrant/myconnectome
-$HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
+if ! [ -f $HOME/myconnectome/.started ]; then
+  cd /home/vagrant/myconnectome
+  $HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
+fi
 
 # Start the flask application via supervisor
 sudo ln -s /etc/nginx/sites-available/flask_project /etc/nginx/sites-enabled/flask_project
@@ -255,13 +261,16 @@ sudo /etc/init.d/nginx restart
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start flask_project
-echo "Open browser to 192.168.0.20:5000"
+echo ""
+echo "Open your browser to 192.168.0.20:5000 to view analysis"
 
 # Start the analysis for the user
-touch /home/vagrant/myconnectome/.started
-source /home/vagrant/.env
-$HOME/miniconda/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
-
+if ! [ -f $HOME/myconnectome/.started ]; then
+  touch /home/vagrant/myconnectome/.started
+  source /home/vagrant/.env
+  $HOME/miniconda/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
+fi
+  
 
 SCRIPT
 
@@ -271,7 +280,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define :engine do |engine_config|
     engine_config.vm.box = "gridneuro"
     #engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-    engine_config.vm.box_url = "https://dl.dropboxusercontent.com/u/363467/precise64_neuro.box"
+    engine_config.vm.box_url = "https://s3.amazonaws.com/openfmri/virtual-machines/precise64_neuro.box"
 
     engine_config.vm.network :private_network, ip: "192.168.0.20"
     engine_config.vm.hostname = 'myconnectome-analysis'
