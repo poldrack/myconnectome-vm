@@ -30,3 +30,4 @@ If you wish to log into the virtual machine and look more closely at the results
 
 `vagrant ssh`
 
+The code for the analyses along with all of the results are located in the myconnectome directory.
