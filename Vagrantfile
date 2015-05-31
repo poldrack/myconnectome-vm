@@ -81,7 +81,6 @@ from flask import Flask, render_template, redirect
 from flask.ext.autoindex import AutoIndex
 from subprocess import Popen
 import os
-from collections import OrderedDict
 
 app = Flask(__name__)
 index = AutoIndex(app, browse_root='/var/www/results',add_url_rules=False)
@@ -173,8 +172,8 @@ if ! [ -f /var/www/templates/index.html ]; then
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css' rel='stylesheet'>
 
     <style>
-    @import "http://fonts.googleapis.com/css?family=Lato:400,300,700,900";body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,dfn,th,var{font-style:normal;font-weight:400}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:400}body{background:url(https://raw.githubusercontent.com/vsoch/myconnectome-vm/update/flask/assets/img/bg.jpg);font-family:'Lato',sans-serif;font-weight:300;font-size:16px;color:#555;line-height:1.6em;-webkit-font-smoothing:antialiased;-webkit-overflow-scrolling:touch}h1,h2,h3,h4,h5,h6{font-family:'Lato',sans-serif;font-weight:300;color:#444}h1{font-size:40px}p{margin-bottom:20px;font-size:16px}a{color:#ACBAC1;word-wrap:break-word;-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}a:hover,a:focus{color:#4F92AF;text-decoration:none;outline:0}a:before,a:after{-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}.alignleft{text-align:left}.alignright{text-align:right}.aligncenter{text-align:center}.btn{display:inline-block;padding:10px 20px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.428571429;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;background-image:none;border:1px solid transparent;border-radius:0}#wrapper{text-align:center;padding:50px 0;min-height:650px;width:100%;-webkit-background-size:100%;-moz-background-size:100%;-o-background-size:100%;background-size:100%;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover}#wrapper h1{margin-top:60px;margin-bottom:40px;color:#fff;font-size:45px;font-weight:900;letter-spacing:-1px}h2.subtitle{color:#fff;font-size:24px}.logo_box{width:349px;float:left;border-right:1px solid #303030;height:600px;position:relative}h1{padding:12px 70px 12px 20px;position:absolute;right:0;text-align:left;top:25%;float:left;color:#fff;letter-spacing:-1px;font-size:38px}h1 cufon{margin-bottom:-4px}.main_box{float:left;width:500px;height:600px;padding:25px}h2{font-family:Georgia;color:#ffe400;font-size:24px;margin-bottom:10px;margin-top:20px}h2 span{color:#fff;font-size:16px;line-height:26px;font-style:italic}ul.info{width:500px;padding:0;margin:10px 0 0;float:left}ul.info li{margin-bottom:20px;clear:both;float:left}ul.info li p{font-size:13px;line-height:20px;color:#fff;float:left;margin:0}.connect{width:145px;padding-left:20px;float:left;padding-top:20px}.connect img{margin-right:5px}
-    </style>
+    @import "http://fonts.googleapis.com/css?family=Lato:400,300,700,900";body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,dfn,th,var{font-style:normal;font-weight:400}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:400}body{background:url(https://raw.githubusercontent.com/vsoch/myconnectome-vm/update/flask/assets/img/bg.jpg);font-family:'Lato',sans-serif;font-weight:300;font-size:16px;color:#555;line-height:1.6em;-webkit-font-smoothing:antialiased;-webkit-overflow-scrolling:touch}h1,h2,h3,h4,h5,h6{font-family:'Lato',sans-serif;font-weight:300;color:#444}h1{font-size:40px}p{margin-bottom:20px;font-size:16px}a{color:#ACBAC1;word-wrap:break-word;-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}a:hover,a:focus{color:#4F92AF;text-decoration:none;outline:0}a:before,a:after{-webkit-transition:color .1s ease-in,background .1s ease-in;-moz-transition:color .1s ease-in,background .1s ease-in;-ms-transition:color .1s ease-in,background .1s ease-in;-o-transition:color .1s ease-in,background .1s ease-in;transition:color .1s ease-in,background .1s ease-in}.alignleft{text-align:left}.alignright{text-align:right}.aligncenter{text-align:center}.btn{display:inline-block;padding:10px 20px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.428571429;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;background-image:none;border:1px solid transparent;border-radius:0}#wrapper{text-align:center;padding:50px 0;min-height:650px;width:100%;-webkit-background-size:100%;-moz-background-size:100%;-o-background-size:100%;background-size:100%;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover}#wrapper h1{margin-top:60px;margin-bottom:40px;color:#fff;font-size:45px;font-weight:900;letter-spacing:-1px}h2.subtitle{color:#fff;font-size:24px}.logo_box{width:349px;float:left;border-right:1px solid #303030;height:600px;position:relative}h1{padding:12px 70px 12px 20px;position:absolute;right:0;text-align:left;top:25%;float:left;color:#fff;letter-spacing:-1px;font-size:38px}h1 cufon{margin-bottom:-4px}.main_box{float:left;width:500px;height:600px;padding:25px}h2{font-family:Georgia;color:#ffe400;font-size:24px;margin-bottom:10px;margin-top:20px}h2 span{color:#fff;font-size:16px;line-height:26px;font-style:italic}ul.info{width:500px;padding:0;margin:10px 0 0;float:left}ul.info li{margin-bottom:20px;clear:both;float:left}ul.info li p{font-size:13px;line-height:20px;color:#fff;float:left;margin:0}.connect{width:145px;padding-left:20px;float:left;padding-top:20px}.connect img{margin-right:5px}.links{bottom: 0px;position: absolute; left: -50px;}
+</style>
     
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -185,12 +184,20 @@ if ! [ -f /var/www/templates/index.html ]; then
   <body>
 <div id='wrapper'>
   <div class='container'>
+    <!-- Left Box-->
     <div class='logo_box'><h1>MyConnectome<br/>Analyses</h1>
-    <!-- Analysis Status Button-->
-    <a class='btn btn-default' href='#' style='left: 40px;bottom: 140px; position:absolute'; role='button' disabled>{{ analysis_status }}</a>
-
-    </div>          
-      <div class='main_box'>
+       <div class="links">
+        <!-- Analysis Status Button-->
+        <a class='btn btn-default' href='#' role='button' style="margin-bottom:40px" disabled>{{ analysis_status }}</a>    
+            <ul>
+               <li><a href="https://github.com/poldrack/myconnectome-vm" target="_blank">Learn more about the MyConnectome Virtual Machine</a></li>
+               <li><a href="http://myconnectome.org" target="_blank">Learn more about the MyConnectome Project</a></li>
+             </ul>
+       </div>
+    </div><!-- End Left Box-->
+    
+    <!-- Right Box-->         
+    <div class='main_box'>
 	<h2>Timeseries analyses</h2>
 	<ul>
             {% for timeseries_url, timeseries_description, timeseries_style, timeseries_title in timeseries_context %}
@@ -208,11 +215,8 @@ if ! [ -f /var/www/templates/index.html ]; then
             {% for meta_url, meta_description, meta_style, meta_title in meta_context %}
     	    <li><a href='{{ meta_url }}' style='{{ meta_style }}' title='{{ meta_title }}'>{{ meta_description }}</a></li>
             {% endfor %}		
-	</ul>
-  <h2><a href="https://github.com/poldrack/myconnectome-vm">Learn more about the MyConnectome Virtual Machine</a></h2>
-  <h2><a href="http://myconnectome.org">Learn more about the MyConnectome Project</a></h2>
-  
-    </div>
+	</ul>  
+    </div><!-- End Right Box-->         
   </div>
 </div>
     <script src='https://code.jquery.com/jquery-2.1.4.min.js'></script>
