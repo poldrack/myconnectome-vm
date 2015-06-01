@@ -235,7 +235,7 @@ if ! [ -f /var/www/templates/index.html ]; then
        <div class='links'>
         <!-- Analysis Status Button-->
         {% if analysis_status == 'Check for Error' %}
-        <a class='btn btn-default' href='/error' role='button' style='margin-bottom:40px'>{{ analysis_status }}</a>    
+        <a class='btn btn-default' href='/log' role='button' style='margin-bottom:40px'>{{ analysis_status }}</a>    
         {% else %}
         <a class='btn btn-default' href='#' role='button' style='margin-bottom:40px' disabled>{{ analysis_status }}</a>    
         {% endif %}
