@@ -159,7 +159,7 @@ def show_analyses():
 
 # Check if python process is still running
 def check_process():
-    process_id = int(os.environ['MYCONNECTOME_ID'])
+    process_id = int(open('/home/vagrant/myconnectome/.started','rb').readlines()[0][0:-1])
     try:
         os.kill(process_id, 0)
     except OSError: 
@@ -382,7 +382,7 @@ if ! [ -f $HOME/myconnectome/.started ]; then
   $HOME/miniconda/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
   # Get the process ID
   MYCONNECTOME_ID=`pgrep python`
-  export MYCONNECTOME_ID
+  sudo echo "$MYCONNECTOME_ID" >> /home/vagrant/myconnectome/.started
 fi
   
 
