@@ -315,8 +315,8 @@ if ! [ -f /var/www/templates/log.html ]; then
 <div class='wrapper' style='padding-left:20px;padding-top:20px;padding-right:20px'>
     <!-- Nav tabs -->
     <ul class='nav nav-tabs' role='tablist'>
-        <li class='active'><a href='#error' role='tab' data-toggle='tab' style='color:red'>Error Log</a></li>
-        <li><a href='#output' role='tab' data-toggle='tab' style='color:red'>Output Log</a></li>
+        <li class='active'><a href='#error' role='tab' data-toggle='tab' style='color:#ACBAC1'>Error Log</a></li>
+        <li><a href='#output' role='tab' data-toggle='tab' style='color:#ACBAC1'>Output Log</a></li>
     </ul>
     <!-- Tab panes -->
     <div class='tab-content'>
