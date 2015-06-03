@@ -32,7 +32,7 @@ More info on how to obtain these keys is available [here](http://docs.aws.amazon
 6. set up the vagrant VM (which may take a little while):
 `vagrant up`
 
-7.  Step 6 will automatically start the analysis processes, which will take several hours to complete.  Using a web browser on your local machine, view the results at [http://192.168.0.20/](http://192.168.0.20/)
+7.  Step 6 will automatically start the analysis processes, which will take several hours to complete.  Using a web browser on your local machine, view the results at [http://192.168.0.20:5000](http://192.168.0.20:5000)
 
 ## Digging deeper
 
