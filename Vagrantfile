@@ -4,8 +4,9 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
-echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> .bashrc
-echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> .bashrc
+echo "[Credentials]" > .boto
+echo "aws_access_key_id = #{ENV['AWS_ACCESS_KEY_ID']}" >> .boto
+echo "export aws_secret_access_key = #{ENV['AWS_SECRET_ACCESS_KEY']}" >> .boto
 
 if [ ! -d $HOME/miniconda ]
 then
