@@ -4,6 +4,9 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
+echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> .bashrc
+echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> .bashrc
+
 if [ ! -d $HOME/miniconda ]
 then
  # install anaconda
