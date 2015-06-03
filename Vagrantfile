@@ -4,8 +4,12 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
-echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> .bashrc
-echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> .bashrc
+#echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> .bashrc
+#echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> .bashrc
+
+# # Install neurodebian repo
+bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
+
 
 if [ ! -d $HOME/miniconda ]
 then
@@ -398,9 +402,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_x11 = true
 
   config.vm.define :engine do |engine_config|
-    engine_config.vm.box = "gridneuro"
-    #engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-    engine_config.vm.box_url = "https://s3.amazonaws.com/openfmri/virtual-machines/precise64_neuro.box"
+    engine_config.vm.box = "precise64"
+    engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+    #engine_config.vm.box_url = "https://s3.amazonaws.com/openfmri/virtual-machines/precise64_neuro.box"
 
     engine_config.vm.network :private_network, ip: "192.168.0.20"
     engine_config.vm.hostname = 'myconnectome-analysis'
