@@ -379,6 +379,9 @@ sudo supervisorctl start flask_project
 echo ""
 echo "Open your browser to 192.168.0.20:5000 to view analysis"
 
+# need to set the date properly in order for AWS up/downloads to work
+sudo ntpdate pool.ntp.org
+
 # Start the analysis for the user
 if ! [ -f $HOME/myconnectome/.started ]; then
   touch /home/vagrant/myconnectome/.started
