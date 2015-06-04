@@ -4,8 +4,8 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
-#echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> .bashrc
-#echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> .bashrc
+echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> .bashrc
+echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> .bashrc
 
 # # Install neurodebian repo
 bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
@@ -42,7 +42,9 @@ rm /tmp/myppa.list
 
 sudo apt-get update > /dev/null
 sudo apt-get install -y --force-yes libicu48
-sudo apt-get install -y --force-yes git connectome-workbench
+sudo apt-get install -y --force-yes r-base 
+sudo apt-get install -y --force-yes git 
+sudo apt-get install -y --force-yes connectome-workbench
 sudo apt-get install -y --force-yes r-base
 sudo apt-get install -y --force-yes xserver-xorg-core
 
@@ -137,17 +139,14 @@ def show_analyses():
     meta_files =       [('/var/www/results/myconnectome/metabolomics/Metabolomics_clustering.html','Metabolomics data preparation'),
                         ('/var/www/results/myconnectome/metabolomics','Listing of all files')]
 
-    rsfmri_files = [('/var/www/results/myconnectome/rsfmri','Listing of all files')]
-
     # How many green links should we have?
-    number_analyses = len(meta_files) + len(rna_files) + len(timeseries_files) + len(rsfmri_files)
+    number_analyses = len(meta_files) + len(rna_files) + len(timeseries_files)
 
     # Check if the file exists, render context based on existence            
     counter = 0
     timeseries_context,counter = create_context(timeseries_files,counter)
     rna_context,counter = create_context(rna_files,counter)
     meta_context,counter = create_context(meta_files,counter)
-    rsfmri_context,counter = create_context(rsfmri_files,counter)
 
     # The counter determines if we've finished running analyses
     analysis_status = 'Analysis is Running'
@@ -165,8 +164,7 @@ def show_analyses():
     return render_template('index.html',timeseries_context=timeseries_context,
                                         rna_context=rna_context,
                                         meta_context=meta_context,
-                                        analysis_status=analysis_status,
-                                        rsfmri_context=rsfmri_context)
+                                        analysis_status=analysis_status)
 
 # Check if python process is still running
 def check_process():
@@ -277,13 +275,6 @@ if ! [ -f /var/www/templates/index.html ]; then
     	    <li><a href='{{ meta_url }}' style='{{ meta_style }}' title='{{ meta_title }}'>{{ meta_description }}</a></li>
             {% endfor %}		
 	</ul>  
-	<h2>Resting state fMRI analyses</h2>
-        <ul>
-            {% for rs_url, rs_description, rs_style, rs_title in rsfmri_context %}
-    	    <li><a href='{{ rs_url }}' style='{{ rs_style }}' title='{{ rs_title }}'>{{ rs_description }}</a></li>
-            {% endfor %}		
-	</ul>  
-
     </div><!-- End Right Box-->         
   </div>
 </div>
