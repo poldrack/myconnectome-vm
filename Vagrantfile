@@ -139,14 +139,17 @@ def show_analyses():
     meta_files =       [('/var/www/results/myconnectome/metabolomics/Metabolomics_clustering.html','Metabolomics data preparation'),
                         ('/var/www/results/myconnectome/metabolomics','Listing of all files')]
 
+    rsfmri_files =       [('/var/www/results/myconnectome/rsfmri','Listing of all files')]
+
     # How many green links should we have?
-    number_analyses = len(meta_files) + len(rna_files) + len(timeseries_files)
+    number_analyses = len(meta_files) + len(rna_files) + len(timeseries_files) + len(rsfmri_files)
 
     # Check if the file exists, render context based on existence            
     counter = 0
     timeseries_context,counter = create_context(timeseries_files,counter)
     rna_context,counter = create_context(rna_files,counter)
     meta_context,counter = create_context(meta_files,counter)
+    rsfmri_context,counter = create_context(rsfmri_files,counter)
 
     # The counter determines if we've finished running analyses
     analysis_status = 'Analysis is Running'
@@ -164,7 +167,8 @@ def show_analyses():
     return render_template('index.html',timeseries_context=timeseries_context,
                                         rna_context=rna_context,
                                         meta_context=meta_context,
-                                        analysis_status=analysis_status)
+                                        analysis_status=analysis_status,
+                                        rsfmri_context=rsfmri_context)
 
 # Check if python process is still running
 def check_process():
@@ -273,6 +277,13 @@ if ! [ -f /var/www/templates/index.html ]; then
         <ul>
             {% for meta_url, meta_description, meta_style, meta_title in meta_context %}
     	    <li><a href='{{ meta_url }}' style='{{ meta_style }}' title='{{ meta_title }}'>{{ meta_description }}</a></li>
+            {% endfor %}		
+	</ul>  
+        </ul>
+	<h2>Resting state fMRI analyses</h2>
+        <ul>
+            {% for rsfmri_url, rsfmri_description, rsfmri_style, rsfmri_title in rsfmri_context %}
+    	    <li><a href='{{ rsfmri_url }}' style='{{ rsfmri_style }}' title='{{ rsfmri_title }}'>{{ rsfmri_description }}</a></li>
             {% endfor %}		
 	</ul>  
     </div><!-- End Right Box-->         
