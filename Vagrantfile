@@ -4,8 +4,8 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
-#echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> .bashrc
-#echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> .bashrc
+echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> .bashrc
+echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> .bashrc
 
 # # Install neurodebian repo
 bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
@@ -42,7 +42,9 @@ rm /tmp/myppa.list
 
 sudo apt-get update > /dev/null
 sudo apt-get install -y --force-yes libicu48
-sudo apt-get install -y --force-yes r-base git connectome-workbench
+sudo apt-get install -y --force-yes r-base 
+sudo apt-get install -y --force-yes git 
+sudo apt-get install -y --force-yes connectome-workbench
 sudo apt-get install -y --force-yes r-base
 sudo apt-get install -y --force-yes xserver-xorg-core
 
