@@ -78,23 +78,20 @@ if ! [ -L /var/www/myconnectome ]; then
 fi
 
 # Clone the data explorer
-if [ ! -d $HOME/myconnectome-explore ]
+if [ ! -d $HOME/myconnectome-explore ]; then
   git clone https://github.com/vsoch/myconnectome-explore.git $HOME/myconnectome-explore
 fi
 
 # Move the static and templates directories
-if [ ! -d /var/www/templates ]
-then
+if [ ! -d /var/www/templates ]; then
   sudo mv $HOME/myconnectome-explore/templates /var/www/templates
 fi
 
-if [ ! -d /var/www/static ]
-then
+if [ ! -d /var/www/static ]; then
   sudo mv $HOME/myconnectome-explore/static /var/www/static
 fi
 
-if [ ! -f /var/www/index.py ]
-then
+if [ ! -f /var/www/index.py ]; then
   sudo mv $HOME/myconnectome-explore/index.py /var/www/index.py
 fi
 
