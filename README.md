@@ -5,14 +5,6 @@ The [MyConnectome project](http://www.myconnectome.org) is a project meant to in
 Much of the preprocessing of the neuroimaging and genomic data were performed using supercomputing resources at the [Texas Advanced Computing Center](http://www.tacc.utexas.edu), which cannot easily be reproduced on standard computers. For these, we have (or will) made the code and data available.  For all other processing and analyses, we have created the [myconnectome python package] (https://github.com/poldrack/myconnectome) that implements these analyses. Any intersted researcher can clone this repository and run the analyses on their own computer.  
 
 Because the software requires a large number of dependencies, we have also created a virtual machine that one can easily set up on one's own machine to perform all of the statistical analyses reported in the MyConnectome paper (Poldrack et al., submitted).  
-## AWS Credentials 
-
-Currently the code requires that you have the following environment variables set:
-
-`AWS_ACCESS_KEY_ID`
-
-`AWS_SECRET_ACCESS_KEY`
-
 More info on how to obtain these keys is available [here](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html).
 
 
