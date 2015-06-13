@@ -78,13 +78,23 @@ if ! [ -L /var/www/myconnectome ]; then
 fi
 
 # Clone the data explorer
-git clone https://github.com/vsoch/myconnectome-explore.git $HOME/myconnectome
+git clone https://github.com/vsoch/myconnectome-explore.git $HOME/myconnectome-explore
 
 # Move the static and templates directories
-sudo mv $HOME/myconnectome/myconnectome-explore/templates /var/www/templates
-sudo mv $HOME/myconnectome/myconnectome-explore/static /var/www/static
-sudo mv $HOME/myconnectome/myconnectome-explore/index.py /var/www/index.py
+if [ ! -d /var/www/templates ]
+then
+  sudo mv $HOME/myconnectome-explore/templates /var/www/templates
+fi
 
+if [ ! -d /var/www/static ]
+then
+  sudo mv $HOME/myconnectome-explore/static /var/www/static
+fi
+
+if [ ! -f /var/www/index.py ]
+then
+  sudo mv $HOME/myconnectome-explore/index.py /var/www/index.py
+fi
 
 # NGINX SETUP
 sudo /etc/init.d/nginx start
