@@ -34,6 +34,7 @@ $HOME/miniconda/bin/pip install mygene
 $HOME/miniconda/bin/pip install flask
 $HOME/miniconda/bin/pip install flup
 $HOME/miniconda/bin/pip install gunicorn
+$HOME/miniconda/bin/pip install nilearn
 $HOME/miniconda/bin/pip install Flask-AutoIndex
 
 echo 'deb http://cran.rstudio.com/bin/linux/ubuntu precise/' >/tmp/myppa.list
