@@ -96,6 +96,11 @@ if [ ! -f /var/www/index.py ]; then
   sudo mv $HOME/myconnectome-explore/index.py /var/www/index.py
 fi
 
+if [ ! -f /var/www/banner.py ]; then
+  sudo mv $HOME/myconnectome-explore/banner.py /var/www/banner.py
+fi
+
+
 # NGINX SETUP
 sudo /etc/init.d/nginx start
 sudo rm /etc/nginx/sites-enabled/default
