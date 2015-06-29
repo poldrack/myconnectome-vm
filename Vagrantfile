@@ -4,8 +4,6 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
-echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> .bashrc
-echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> .bashrc
 
 # # Install neurodebian repo
 bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
@@ -141,7 +139,7 @@ sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start flask_project
 echo ""
-echo "Open your browser to 192.168.0.20:5000 to view analysis"
+echo "Open your browser to 192.128.0.20:5000 to view analysis"
 
 # need to set the date properly in order for AWS up/downloads to work
 sudo ntpdate pool.ntp.org
@@ -167,7 +165,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
     #engine_config.vm.box_url = "https://s3.amazonaws.com/openfmri/virtual-machines/precise64_neuro.box"
 
-    engine_config.vm.network :private_network, ip: "192.168.0.20"
+    engine_config.vm.network :private_network, ip: "192.128.0.20"
     engine_config.vm.hostname = 'myconnectome-analysis'
     #engine_config.vm.synced_folder "/tmp/myconnectome", "/home/vagrant/myconnectome", create: true
 
