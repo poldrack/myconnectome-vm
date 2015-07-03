@@ -49,3 +49,10 @@ If the VM crashes for some reason (which can occur if there is a network hiccup 
 `vagrant destroy`
 
 And then restart it as outlined above.  
+
+## Things we wish we would have done
+
+We learned a lot in the course of doing this project, and there are a number of things that we would probably do differently, but at this point just don't have the cycles to do it.  Some of these include:
+
+- Use Jupyter to expose working R notebooks
+- Use conda to manage all of the installation dependencies [http://continuum.io/blog/conda-data-science](http://continuum.io/blog/conda-data-science) rather than the current mixture of conda/pip/R
