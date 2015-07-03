@@ -54,5 +54,6 @@ And then restart it as outlined above.
 
 We learned a lot in the course of doing this project, and there are a number of things that we would probably do differently, but at this point just don't have the cycles to do it.  Some of these include:
 
+- Use a better file distribution system.  Currently the get_data function uses fixed lists of files to download from S3, because we didn't want to require each user to enter an AWS access key.  This is a rather brittle system.
 - Use Jupyter to expose working R notebooks
 - Use conda to manage all of the installation dependencies [http://continuum.io/blog/conda-data-science](http://continuum.io/blog/conda-data-science) rather than the current mixture of conda/pip/R
