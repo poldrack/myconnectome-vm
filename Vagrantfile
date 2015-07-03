@@ -61,14 +61,15 @@ echo "export R_LIBS_USER=$HOME/R_libs" >> .bashrc
 echo "export R_LIBS_USER=$HOME/R_libs" >> .env
 fi
 
-
 if [ ! -d $HOME/myconnectome ]
 then
   git clone https://github.com/poldrack/myconnectome.git $HOME/myconnectome
   echo "export MYCONNECTOME_DIR=$HOME/myconnectome" >> .bashrc
   echo "export WORKBENCH_BIN_DIR=/usr/bin" >> .bashrc
+  echo "export TIME_LOG_FILE=$HOME/myconnectome/.timing.txt" >> .bashrc
   echo "export MYCONNECTOME_DIR=$HOME/myconnectome" >> .env
   echo "export WORKBENCH_BIN_DIR=/usr/bin" >> .env
+  echo "export TIME_LOG_FILE=$HOME/myconnectome/.timing.txt" >> .env
   cd $HOME/myconnectome
 fi
 
