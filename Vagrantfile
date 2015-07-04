@@ -49,8 +49,6 @@ sudo apt-get install -y --force-yes xserver-xorg-core
 
 # NGINX install
 sudo apt-get install -y --force-yes nginx
-sudo apt-get install -y --force-yes supervisor
-
 
 if [ ! -d $HOME/R_libs ]
 then
@@ -114,31 +112,15 @@ server {
   sudo cp /tmp/aijfaef /etc/nginx/sites-available/flask_project
 fi
 
-# Supervisor Configuration
-if ! [ -f /etc/supervisor/conf.d/flask_project.conf ]; then
-  echo """[program:flask_project]
-command = /home/vagrant/miniconda/bin/gunicorn index:app -b 0.0.0.0:5000
-directory = /var/www
-user = vagrant
-""" >/tmp/abcde
-  sudo cp /tmp/abcde /etc/supervisor/conf.d/flask_project.conf
-fi
-
 # Install my connectome and start analyses
 if ! [ -f $HOME/myconnectome/.started ]; then
   cd /home/vagrant/myconnectome
   $HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
 fi
 
-# Start the flask application via supervisor
+# Add the configuration to nginx sites enabled, to be run with gunicorn
 sudo ln -s /etc/nginx/sites-available/flask_project /etc/nginx/sites-enabled/flask_project
 cd /var/www
-sudo /etc/init.d/nginx restart
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl start flask_project
-echo ""
-echo "Open your browser to 192.128.0.20:5000 to view analysis"
 
 # need to set the date properly in order for AWS up/downloads to work
 sudo ntpdate pool.ntp.org
@@ -153,6 +135,12 @@ if ! [ -f $HOME/myconnectome/.started ]; then
   sudo echo "$MYCONNECTOME_ID" >> /home/vagrant/myconnectome/.started
 fi
   
+# Start the application with gunicorn
+sudo /etc/init.d/nginx restart
+$HOME/miniconda/bin/gunicorn index:app -b 0.0.0.0:5000 &
+sudo /etc/init.d/nginx restart
+echo ""
+echo "Open your browser to 192.128.0.20:5000 to view analysis"
 
 SCRIPT
 
