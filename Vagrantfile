@@ -15,25 +15,25 @@ then
  wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
  chmod +x miniconda.sh
  ./miniconda.sh -b
- echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .bashrc
- echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
+ echo "export PATH=$HOME/miniconda2/bin:\\$PATH" >> .bashrc
+ echo "export PATH=$HOME/miniconda2/bin:\\$PATH" >> .env
 fi
 
 # install nipype dependencies
-$HOME/miniconda/bin/conda update --yes conda
-$HOME/miniconda/bin/pip install setuptools
-$HOME/miniconda/bin/conda install --yes pip numpy scipy nose traits networkx
-$HOME/miniconda/bin/conda install --yes dateutil ipython-notebook matplotlib
-$HOME/miniconda/bin/conda install --yes statsmodels boto  pandas scikit-learn
-$HOME/miniconda/bin/pip install nibabel
-$HOME/miniconda/bin/pip install gtf_to_genes
-$HOME/miniconda/bin/pip install suds
-$HOME/miniconda/bin/pip install mygene
-$HOME/miniconda/bin/pip install flask
-$HOME/miniconda/bin/pip install flup
-$HOME/miniconda/bin/pip install gunicorn
-$HOME/miniconda/bin/pip install nilearn
-$HOME/miniconda/bin/pip install Flask-AutoIndex
+$HOME/miniconda2/bin/conda update --yes conda
+$HOME/miniconda2/bin/pip install setuptools
+$HOME/miniconda2/bin/conda install --yes pip numpy scipy nose traits networkx
+$HOME/miniconda2/bin/conda install --yes dateutil ipython-notebook matplotlib
+$HOME/miniconda2/bin/conda install --yes statsmodels boto  pandas scikit-learn
+$HOME/miniconda2/bin/pip install nibabel
+$HOME/miniconda2/bin/pip install gtf_to_genes
+$HOME/miniconda2/bin/pip install suds
+$HOME/miniconda2/bin/pip install mygene
+$HOME/miniconda2/bin/pip install flask
+$HOME/miniconda2/bin/pip install flup
+$HOME/miniconda2/bin/pip install gunicorn
+$HOME/miniconda2/bin/pip install nilearn
+$HOME/miniconda2/bin/pip install Flask-AutoIndex
 
 echo 'deb http://cran.rstudio.com/bin/linux/ubuntu precise/' >/tmp/myppa.list
 sudo cp /tmp/myppa.list /etc/apt/sources.list.d/
@@ -115,7 +115,7 @@ fi
 # Install my connectome and start analyses
 if ! [ -f $HOME/myconnectome/.started ]; then
   cd /home/vagrant/myconnectome
-  $HOME/miniconda/bin/python /home/vagrant/myconnectome/setup.py install
+  $HOME/miniconda2/bin/python /home/vagrant/myconnectome/setup.py install
 fi
 
 # Add the configuration to nginx sites enabled, to be run with gunicorn
@@ -129,7 +129,7 @@ sudo ntpdate pool.ntp.org
 if ! [ -f $HOME/myconnectome/.started ]; then
   touch /home/vagrant/myconnectome/.started
   source /home/vagrant/.env
-  $HOME/miniconda/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
+  $HOME/miniconda2/bin/python /home/vagrant/myconnectome/myconnectome/scripts/run_everything.py > /home/vagrant/myconnectome/myconnectome_job.out 2> /home/vagrant/myconnectome/myconnectome_job.err &
   # Get the process ID
   MYCONNECTOME_ID=`pgrep python`
   sudo echo "$MYCONNECTOME_ID" >> /home/vagrant/myconnectome/.started
@@ -137,7 +137,7 @@ fi
   
 # Start the application with gunicorn
 sudo /etc/init.d/nginx restart
-$HOME/miniconda/bin/gunicorn index:app -b 0.0.0.0:5000 &
+$HOME/miniconda2/bin/gunicorn index:app -b 0.0.0.0:5000 &
 sudo /etc/init.d/nginx restart
 echo ""
 echo "Open your browser to 192.128.0.20:5000 to view analysis"
@@ -149,8 +149,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define :engine do |engine_config|
     engine_config.vm.box = "precise64"
-    engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-    #engine_config.vm.box_url = "https://s3.amazonaws.com/openfmri/virtual-machines/precise64_neuro.box"
+    #engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+    engine_config.vm.box_url = "https://s3.amazonaws.com/openfmri/virtual-machines/precise64_neuro.box"
 
     engine_config.vm.network :private_network, ip: "192.128.0.20"
     engine_config.vm.hostname = 'myconnectome-analysis'
