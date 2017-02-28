@@ -10,7 +10,7 @@ Because the software requires a large number of dependencies, we have also creat
 
 1. Install [VirtualBox] (https://www.virtualbox.org/wiki/Downloads)
 
-2. Install [Vagrant] (http://www.vagrantup.com/downloads) - Vagrant is a provisioning system that sets up the virtual machine.
+2. Install [Vagrant] (https://www.vagrantup.com/downloads.html) - Vagrant is a provisioning system that sets up the virtual machine.
 
 3. If you don't already have it, install [git] (https://git-scm.com/downloads)
 
